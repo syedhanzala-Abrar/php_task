@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indian Cities</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+/* container */
+.container{
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+/* dropdowns */
+select{
+    width:250px;
+    padding:10px;
+    margin:10px 0;
+    border-radius:6px;
+    border:1px solid #ccc;
+    font-size:16px;
+    cursor:pointer;
+}
+
+/* hover effect */
+select:hover{
+    border-color:#007BFF;
+}
+
+/* focus effect */
+select:focus{
+    outline:none;
+    border-color:#007BFF;
+    box-shadow:0 0 5px rgba(0,123,255,0.5);
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+<h2>Select State & City</h2>
+
+<select id="state"></select>
+<br>
+<select id="city"></select>
+</div>
+
+<script>
+const stateDropdown = document.getElementById("state");
+const cityDropdown = document.getElementById("city");
+
+// Load states
+async function loadStates() {
+  const res = await fetch("https://countriesnow.space/api/v0.1/countries/states", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ country: "India" })
+  });
+
+  const data = await res.json();
+
+  data.data.states.forEach(state => {
+    const option = document.createElement("option");
+    option.value = state.name;
+    option.textContent = state.name;
+    stateDropdown.appendChild(option);
+  });
+}
+
+// Load cities when state changes
+stateDropdown.addEventListener("change", async () => {
+  const state = stateDropdown.value;
+
+  const res = await fetch("https://countriesnow.space/api/v0.1/countries/state/cities", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ country: "India", state })
+  });
+
+  const data = await res.json();
+
+  cityDropdown.innerHTML = "";
+
+  data.data.forEach(city => {
+    const option = document.createElement("option");
+    option.value = city;
+    option.textContent = city;
+    cityDropdown.appendChild(option);
+  });
+});
+
+// Initialize
+loadStates();
+</script>
+
+</body>
+</html>

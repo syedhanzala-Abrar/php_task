@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Customer Registration</title>
+
+<style>
+body{
+    font-family: Arial;
+    background-color:#f4f4f4;
+}
+
+.container{
+    width:400px;
+    margin:100px auto;
+    padding:20px;
+    background:white;
+    border-radius:10px;
+    box-shadow:0 0 10px gray;
+}
+
+h2{
+    text-align:center;
+}
+
+.form-group{
+    display:flex;
+    justify-content:space-between;
+    margin:10px 0;
+}
+
+label{
+    width:40%;
+    font-weight:bold;
+}
+
+input,select{
+    width:55%;
+    padding:5px;
+}
+
+button{
+    width:100%;
+    margin-top:15px;
+    padding:10px;
+    background-color:green;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background-color:blue;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>Customer Info</h2>
+
+<form action="newcustomer.php" method="get">
+
+<div class="form-group">
+<label>CID</label>
+<input type="text" name="cid" required>
+</div>
+
+<div class="form-group">
+<label>Name</label>
+<input type="text" name="cname" required>
+</div>
+
+<div class="form-group">
+<label>Email</label>
+<input type="email" name="email" required>
+</div>
+
+<div class="form-group">
+<label>Age</label>
+<input type="number" name="age" required>
+</div>
+
+<!-- STATE DROPDOWN -->
+<div class="form-group">
+<label>State</label>
+<select name="state" id="state" required>
+<option value="">Select State</option>
+</select>
+</div>
+
+<!-- CITY DROPDOWN -->
+<div class="form-group">
+<label>City</label>
+<select name="city" id="city" required>
+<option value="">Select City</option>
+</select>
+</div>
+
+<button type="submit">Save</button>
+
+</form>
+</div>
+
+
+<script>
+
+const stateDropdown = document.getElementById("state");
+const cityDropdown = document.getElementById("city");
+
+// Load states
+async function loadStates(){
+
+const res = await fetch(
+"https://countriesnow.space/api/v0.1/countries/states",
+{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({country:"India"})
+});
+
+const data = await res.json();
+
+data.data.states.forEach(state=>{
+
+const option=document.createElement("option");
+option.value=state.name;
+option.textContent=state.name;
+
+stateDropdown.appendChild(option);
+
+});
+
+}
+
+
+// Load cities when state changes
+stateDropdown.addEventListener("change",async()=>{
+
+const state=stateDropdown.value;
+
+const res=await fetch(
+"https://countriesnow.space/api/v0.1/countries/state/cities",
+{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+country:"India",
+state:state
+})
+});
+
+const data=await res.json();
+
+cityDropdown.innerHTML="<option>Select City</option>";
+
+data.data.forEach(city=>{
+
+const option=document.createElement("option");
+option.value=city;
+option.textContent=city;
+
+cityDropdown.appendChild(option);
+
+});
+
+});
+
+// Initialize
+loadStates();
+
+</script>
+
+</body>
+</html>
