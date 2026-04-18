@@ -27,7 +27,7 @@ if (empty($idno) || empty($password)) {
 $host = 'localhost';
 $db = 'Leapstart';
 $user = 'postgres';
-$dbPassword = '@2333103080@';
+$dbPassword = 'SHA2456101717';
 
 try {
     $dsn = "pgsql:host=$host;port=5432;dbname=$db";
@@ -70,3 +70,4 @@ try {
         "message" => $e->getMessage()
     ]);
 }
+?>
